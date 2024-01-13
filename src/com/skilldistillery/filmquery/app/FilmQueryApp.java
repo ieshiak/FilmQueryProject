@@ -11,13 +11,8 @@ public class FilmQueryApp {
   DatabaseAccessor db = new DatabaseAccessorObject();
 
   public static void main(String[] args) {
-    try {
-		FilmQueryApp app = new FilmQueryApp();
-		app.test();
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+    FilmQueryApp app = new FilmQueryApp();
+    app.test();
 //    app.launch();
   }
 

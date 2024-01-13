@@ -1,27 +1,28 @@
 package com.skilldistillery.filmquery.entities;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Actor {
-	private int id;
+	private int actorId;
 	private String firstName;
 	private String lastName;
 	private List<Film> films;
 
-	public Actor(int id, String firstName, String lastName, List<Film> films) {
+	public Actor(int actorId, String firstName, String lastName, List<Film> films) {
 		super();
-		this.id = id;
+		this.actorId = actorId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.films = films;
 	}
 
-	public int getId() {
-		return id;
+	public int getActorId() {
+		return actorId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setActorId(int actorId) {
+		this.actorId = actorId;
 	}
 
 	public String getFirstName() {
@@ -49,10 +50,28 @@ public class Actor {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hash(actorId, films, firstName, lastName);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Actor other = (Actor) obj;
+		return actorId == other.actorId && Objects.equals(films, other.films)
+				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName);
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Actor [id=");
-		builder.append(id);
+		builder.append("Actor [actorId=");
+		builder.append(actorId);
 		builder.append(", firstName=");
 		builder.append(firstName);
 		builder.append(", lastName=");
