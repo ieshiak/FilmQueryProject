@@ -103,11 +103,11 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    int filmId = resultSet.getInt("id");
 	    String title = resultSet.getString("title");
 	    String description = resultSet.getString("description");
-	    Integer releaseYear = resultSet.getInt("release_year"); // Use Integer for potential null values
+	    Integer releaseYear = resultSet.getInt("release_year");
 	    int languageId = resultSet.getInt("language_id");
 	    int rentalDuration = resultSet.getInt("rental_duration");
 	    double rentalRate = resultSet.getDouble("rental_rate");
-	    Integer length = resultSet.getInt("length"); // Use Integer for potential null values
+	    Integer length = resultSet.getInt("length");
 	    double replacementCost = resultSet.getDouble("replacement_cost");
 	    String rating = resultSet.getString("rating");
 	    String specialFeatures = resultSet.getString("special_features");
@@ -125,14 +125,31 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 //	            "Rating: " + rating + ",\n "  +
 //	            "Special Features: " + Arrays.toString(extractSpecialFeatures(specialFeatures)));
 	    
-	    return new Film(filmId, title, description, releaseYear, languageId, rentalDuration, rentalRate, length,
-                replacementCost, rating, extractSpecialFeatures(specialFeatures));
+		    String language = findLanguageById(languageId);
+
+		    return new Film(filmId, title, description, releaseYear, language, rentalDuration, rentalRate, length,
+		            replacementCost, rating, extractSpecialFeatures(specialFeatures));
 	}
+	
+	private String findLanguageById(int languageId) {
+	    String sql = "SELECT name FROM language WHERE id = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setInt(1, languageId);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getString("name");
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace(); // Handle or log the exception appropriately
+	    }
+	    return null;
+	}
+
 
 	private String[] extractSpecialFeatures(String specialFeatures) {
-	    return (specialFeatures != null) ? specialFeatures.split(",") : null;
+		return (specialFeatures != null) ? specialFeatures.split(",") : null;
 	}
-
 	private Actor extractActorFromResultSet(ResultSet resultSet) throws SQLException {
 		int actorId = resultSet.getInt("id");
 		String firstName = resultSet.getString("first_name");
@@ -151,6 +168,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	        } catch (SQLException e) {
 	            e.printStackTrace(); // Handle the exception appropriately
 	        }
+	       
 	    }
 
 }

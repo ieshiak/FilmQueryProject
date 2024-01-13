@@ -9,6 +9,7 @@ public class Film {
     private String description;
     private Integer releaseYear; // Using Integer to allow null values
     private int languageId;
+    private String language;
     private int rentalDuration;
     private double rentalRate;
     private Integer length; // Using Integer to allow null values
@@ -16,21 +17,22 @@ public class Film {
     private String rating;
     private String[] specialFeatures;
 	
-    public Film(int id, String title, String description, Integer releaseYear, int languageId, int rentalDuration,
-			double rentalRate, Integer length, double replacementCost, String rating, String[] specialFeatures) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.releaseYear = releaseYear;
-		this.languageId = languageId;
-		this.rentalDuration = rentalDuration;
-		this.rentalRate = rentalRate;
-		this.length = length;
-		this.replacementCost = replacementCost;
-		this.rating = rating;
-		this.specialFeatures = specialFeatures;
-	}
+    public Film(int id, String title, String description, Integer releaseYear, String language, int rentalDuration,
+            double rentalRate, Integer length, double replacementCost, String rating, String[] specialFeatures) {
+        super();
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.language = language; // Add this line to set the language field
+        this.rentalDuration = rentalDuration;
+        this.rentalRate = rentalRate;
+        this.length = length;
+        this.replacementCost = replacementCost;
+        this.rating = rating;
+        this.specialFeatures = specialFeatures;
+    }
+
 
 	public int getId() {
 		return id;
@@ -71,6 +73,14 @@ public class Film {
 	public void setLanguageId(int languageId) {
 		this.languageId = languageId;
 	}
+	
+	public String getLanguage() {
+	    return language;
+	    }
+
+	public void setLanguage(String language) {
+	    this.language = language;
+	    }
 
 	public int getRentalDuration() {
 		return rentalDuration;
@@ -127,7 +137,7 @@ public class Film {
                 "Title: " + title + '\n' +
                 "Description: " + description + '\n' +
                 "Release Year: " + releaseYear + '\n' +
-                "Language ID: " + languageId + '\n' +
+                "Language: " + language + '\n' +
                 "Rental Duration: " + rentalDuration + '\n' +
                 "Rental Rate: $" + rentalRate + '\n' +
                 "Length: " + length + " mins" + '\n' +
