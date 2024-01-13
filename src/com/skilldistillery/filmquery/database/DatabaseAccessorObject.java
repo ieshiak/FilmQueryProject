@@ -141,7 +141,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	            }
 	        }
 	    } catch (SQLException e) {
-	        e.printStackTrace(); // Handle or log the exception appropriately
+	        e.printStackTrace();
 	    }
 	    return null;
 	}

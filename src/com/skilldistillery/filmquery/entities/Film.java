@@ -7,12 +7,12 @@ public class Film {
     private int id;
     private String title;
     private String description;
-    private Integer releaseYear; // Using Integer to allow null values
+    private Integer releaseYear;
     private int languageId;
     private String language;
     private int rentalDuration;
     private double rentalRate;
-    private Integer length; // Using Integer to allow null values
+    private Integer length;
     private double replacementCost;
     private String rating;
     private String[] specialFeatures;
@@ -24,7 +24,7 @@ public class Film {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
-        this.language = language; // Add this line to set the language field
+        this.language = language;
         this.rentalDuration = rentalDuration;
         this.rentalRate = rentalRate;
         this.length = length;
@@ -138,7 +138,7 @@ public class Film {
                 "Description: " + description + '\n' +
                 "Release Year: " + releaseYear + '\n' +
                 "Language: " + language + '\n' +
-                "Rental Duration: " + rentalDuration + '\n' +
+                "Rental Duration: " + rentalDuration + " days" + '\n' +
                 "Rental Rate: $" + rentalRate + '\n' +
                 "Length: " + length + " mins" + '\n' +
                 "Replacement Cost: $" + replacementCost + '\n' +
