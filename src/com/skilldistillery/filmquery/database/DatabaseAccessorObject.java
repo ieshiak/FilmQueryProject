@@ -53,7 +53,9 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	        try (ResultSet rs = stmt.executeQuery()) {
 	            if (rs.next()) {
 	                Actor actor = extractActorFromResultSet(rs);
-	                //System.out.println("Found Actor: " + actor);
+	                List<Film> films = findFilmsByActorId(actorId);
+	                actor.setFilms(films);
+	                //System.out.println("Films for Actor ID " + actorId + ": " + films); // Debugging line
 	                return actor;
 	            }
 	        }
@@ -85,6 +87,23 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	        System.out.println("No actors found for Film ID: " + filmId);
 	    }
 	    return actors;
+	}
+
+	public List<Film> findFilmsByActorId(int actorId) {
+		List<Film> films = new ArrayList<>();
+	    String sql = "SELECT f.* FROM film f JOIN film_actor fa ON f.id = fa.film_id WHERE fa.actor_id = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setInt(1, actorId);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                Film film = extractFilmFromResultSet(rs);
+	                films.add(film);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return films;
 	}
 
 	private Film extractFilmFromResultSet(ResultSet resultSet) throws SQLException {
@@ -136,6 +155,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    return new Actor(actorId, firstName, lastName, films);
 	}
 
+
 	public void closeConnection() {
 		try {
 			if (conn != null && !conn.isClosed()) {
@@ -144,5 +164,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
+
 }

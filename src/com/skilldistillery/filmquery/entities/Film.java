@@ -175,29 +175,44 @@ public class Film {
 	public String toString() {
 	    StringBuilder builder = new StringBuilder();
 	    builder.append("Film ").append('\n');
-	    builder.append("ID: ").append(id).append('\n');
-	    builder.append("Title: ").append(title).append('\n');
-	    builder.append("Description: ").append(description).append('\n');
-	    builder.append("Release Year: ").append(releaseYear).append('\n');
-	    builder.append("Language: ").append(language).append('\n');
-	    builder.append("Rental Duration: ").append(rentalDuration).append(" days").append('\n');
-	    builder.append("Rental Rate: $").append(rentalRate).append('\n');
-	    builder.append("Length: ").append(length).append(" mins").append('\n');
-	    builder.append("Replacement Cost: $").append(replacementCost).append('\n');
-	    builder.append("Rating: ").append(rating).append('\n');
-	    builder.append("Special Features: ").append(Arrays.toString(specialFeatures)).append('\n');
-	    
-	    // Print each actor individually without brackets
+	    builder.append(" - ID: ").append(id).append('\n');
+	    builder.append(" - Title: ").append(title).append('\n');
+	    builder.append(" - Description: ").append(wrapText(description, 40, "\t")).append('\n');
+	    builder.append(" - Release Year: ").append(releaseYear).append('\n');
+	    builder.append(" - Language: ").append(language).append('\n');
+	    builder.append(" - Rental Duration: ").append(rentalDuration).append(" days").append('\n');
+	    builder.append(" - Rental Rate: $").append(rentalRate).append('\n');
+	    builder.append(" - Length: ").append(length).append(" mins").append('\n');
+	    builder.append(" - Replacement Cost: $").append(replacementCost).append('\n');
+	    builder.append(" - Rating: ").append(rating).append('\n');
+	    builder.append(" - Special Features: ").append(Arrays.toString(specialFeatures)).append('\n');
 	    Collections.sort(actors, (a1, a2) -> a1.getLastName().compareToIgnoreCase(a2.getLastName()));
-
-	    builder.append("Actors:").append('\n');
+	    if (actors != null) {
+	        builder.append("Actors").append('\n');
 	    for (Actor actor : actors) {
 	        builder.append(" - Id: ").append(actor.getActorId())
-	               .append(" \t - Name: ").append(actor.getFirstName())
-	               .append(" ").append(actor.getLastName()).append('\n');
+	                .append(" \t - Name: ").append(actor.getFirstName())
+	                .append(" ").append(actor.getLastName()).append('\n');
 	    }
-
+	}
 	    return builder.toString();
 	}
 
+	private String wrapText(String text, int lineWidth, String prefix) {
+	    StringBuilder result = new StringBuilder();
+	    String[] words = text.split("\\s+");
+
+	    int currentLineLength = 0;
+	    for (String word : words) {
+	        if (currentLineLength + word.length() > lineWidth) {
+	            result.append(System.lineSeparator()).append(prefix);
+	            currentLineLength = 0;
+	        }
+
+	        result.append(word).append(" ");
+	        currentLineLength += word.length() + 1; // 1 for the space
+	    }
+
+	    return result.toString();
+	}
 }
