@@ -70,15 +70,13 @@ public class Actor {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Actor [actorId=");
+		builder.append("Id: ");
 		builder.append(actorId);
-		builder.append(", firstName=");
+		builder.append(", First Name: ");
 		builder.append(firstName);
-		builder.append(", lastName=");
+		builder.append(", Last Name: ");
 		builder.append(lastName);
-		builder.append(", films=");
-		builder.append(films);
-		builder.append("]");
+		builder.append(" \n ");
 		return builder.toString();
 	}
 }

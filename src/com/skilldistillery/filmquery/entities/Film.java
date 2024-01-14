@@ -1,6 +1,8 @@
 package com.skilldistillery.filmquery.entities;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class Film {
@@ -16,27 +18,30 @@ public class Film {
     private double replacementCost;
     private String rating;
     private String[] specialFeatures;
-	
+    private List<Actor> actors;
+    
     public Film(int id, String title, String description, Integer releaseYear, String language, int rentalDuration,
-            double rentalRate, Integer length, double replacementCost, String rating, String[] specialFeatures) {
-        super();
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.releaseYear = releaseYear;
-        this.language = language;
-        this.rentalDuration = rentalDuration;
-        this.rentalRate = rentalRate;
-        this.length = length;
-        this.replacementCost = replacementCost;
-        this.rating = rating;
-        this.specialFeatures = specialFeatures;
-    }
+            double rentalRate, Integer length, double replacementCost, String rating, String[] specialFeatures, List<Actor> actors) {
+    super();
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.releaseYear = releaseYear;
+    this.language = language;
+    this.rentalDuration = rentalDuration;
+    this.rentalRate = rentalRate;
+    this.length = length;
+    this.replacementCost = replacementCost;
+    this.rating = rating;
+    this.specialFeatures = specialFeatures;
+    this.setActors(actors);
+}
 
 
 	public int getId() {
 		return id;
 	}
+	
 
 	public void setId(int id) {
 		this.id = id;
@@ -129,44 +134,70 @@ public class Film {
 	public void setSpecialFeatures(String[] specialFeatures) {
 		this.specialFeatures = specialFeatures;
 	}
+
+	public List<Actor> getActors() {
+		return actors;
+	}
+
+	public void setActors(List<Actor> actors) {
+		this.actors = actors;
+	}
 	
 	@Override
-    public String toString() {
-        return "Film " + '\n' +
-                "ID: " + id + '\n' +
-                "Title: " + title + '\n' +
-                "Description: " + description + '\n' +
-                "Release Year: " + releaseYear + '\n' +
-                "Language: " + language + '\n' +
-                "Rental Duration: " + rentalDuration + " days" + '\n' +
-                "Rental Rate: $" + rentalRate + '\n' +
-                "Length: " + length + " mins" + '\n' +
-                "Replacement Cost: $" + replacementCost + '\n' +
-                "Rating: " + rating + '\n' +
-                "Special Features: " + Arrays.toString(specialFeatures) +
-                '\n';
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(specialFeatures);
+		result = prime * result + Objects.hash(actors, description, id, language, languageId, length, rating,
+				releaseYear, rentalDuration, rentalRate, replacementCost, title);
+		return result;
+	}
+
 	@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Film film = (Film) o;
-        return id == film.id &&
-                languageId == film.languageId &&
-                rentalDuration == film.rentalDuration &&
-                Double.compare(film.rentalRate, rentalRate) == 0 &&
-                Double.compare(film.replacementCost, replacementCost) == 0 &&
-                Objects.equals(title, film.title) &&
-                Objects.equals(description, film.description) &&
-                Objects.equals(releaseYear, film.releaseYear) &&
-                Objects.equals(length, film.length) &&
-                Objects.equals(rating, film.rating) &&
-                Arrays.equals(specialFeatures, film.specialFeatures);
-    }
-	 @Override
-	    public int hashCode() {
-	        int result = Objects.hash(id, title, description, releaseYear, languageId, rentalDuration, rentalRate, length, replacementCost, rating);
-	        result = 31 * result + Arrays.hashCode(specialFeatures);
-	        return result;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Film other = (Film) obj;
+		return Objects.equals(actors, other.actors) && Objects.equals(description, other.description) && id == other.id
+				&& Objects.equals(language, other.language) && languageId == other.languageId
+				&& Objects.equals(length, other.length) && Objects.equals(rating, other.rating)
+				&& Objects.equals(releaseYear, other.releaseYear) && rentalDuration == other.rentalDuration
+				&& Double.doubleToLongBits(rentalRate) == Double.doubleToLongBits(other.rentalRate)
+				&& Double.doubleToLongBits(replacementCost) == Double.doubleToLongBits(other.replacementCost)
+				&& Arrays.equals(specialFeatures, other.specialFeatures) && Objects.equals(title, other.title);
+	}
+
+	@Override
+	public String toString() {
+	    StringBuilder builder = new StringBuilder();
+	    builder.append("Film ").append('\n');
+	    builder.append("ID: ").append(id).append('\n');
+	    builder.append("Title: ").append(title).append('\n');
+	    builder.append("Description: ").append(description).append('\n');
+	    builder.append("Release Year: ").append(releaseYear).append('\n');
+	    builder.append("Language: ").append(language).append('\n');
+	    builder.append("Rental Duration: ").append(rentalDuration).append(" days").append('\n');
+	    builder.append("Rental Rate: $").append(rentalRate).append('\n');
+	    builder.append("Length: ").append(length).append(" mins").append('\n');
+	    builder.append("Replacement Cost: $").append(replacementCost).append('\n');
+	    builder.append("Rating: ").append(rating).append('\n');
+	    builder.append("Special Features: ").append(Arrays.toString(specialFeatures)).append('\n');
+	    
+	    // Print each actor individually without brackets
+	    Collections.sort(actors, (a1, a2) -> a1.getLastName().compareToIgnoreCase(a2.getLastName()));
+
+	    builder.append("Actors:").append('\n');
+	    for (Actor actor : actors) {
+	        builder.append(" - Id: ").append(actor.getActorId())
+	               .append(" \t - Name: ").append(actor.getFirstName())
+	               .append(" ").append(actor.getLastName()).append('\n');
 	    }
+
+	    return builder.toString();
+	}
+
 }
