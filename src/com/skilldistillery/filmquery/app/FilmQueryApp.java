@@ -1,8 +1,8 @@
 package com.skilldistillery.filmquery.app;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
@@ -50,7 +50,7 @@ public class FilmQueryApp {
 
 			try {
 				choice = input.nextInt();
-				input.nextLine(); // Consume the newline character
+				input.nextLine(); 
 				switch (choice) {
 				case 1:
 					lookUpFilmById(input);
@@ -68,85 +68,73 @@ public class FilmQueryApp {
 				System.out.println("Invalid input. Please enter a number.");
 				input.nextLine();
 			}
-
-
-//			while (choice != 3) {
-//				System.out.print("Enter 'M' to return to the main menu: ");
-//				String returnToMainMenu = input.nextLine().toUpperCase();
-//				// input.nextLine();
-//
-//				if (!returnToMainMenu.equals("M")) {
-//					System.out.println("Invalid choice. Returning to the main menu.");
-//				} else {
-//					break; // exit the loop if 'M' is entered
-//				}
-//			}
-	} while (choice != 3);
+		} while (choice != 3);
 	}
-	
 
 	private void lookUpFilmById(Scanner input) {
-	    System.out.print("Enter the film ID: ");
-	    try {
-	        int filmId = input.nextInt();
-	        Film film = db.findFilmById(filmId);
-	        if (film != null) {
-	            System.out.println("Film details:\n" + film);
+		System.out.print("Enter the film ID: ");
+		try {
+			int filmId = input.nextInt();
+			Film film = db.findFilmById(filmId);
+			if (film != null) {
+				System.out.println("\nFilm details:");
+				System.out.println("---------------------------------------");
+				System.out.println(film);
 
-	            int submenuChoice = 0; // Remove initialization
+				int submenuChoice = 0; // Remove initialization
 
-	            do {
-	                System.out.println("--------- Film Details Submenu --------");
-	                System.out.println("1. Return to the main menu");
-	                System.out.println("2. View all film details");
-	                System.out.println("---------------------------------------");
-	                System.out.print("Enter your choice: ");
+				do {
+					System.out.println("--------- Film Details Submenu --------");
+					System.out.println("1. Return to the main menu");
+					System.out.println("2. View all film details");
+					System.out.println("---------------------------------------");
+					System.out.print("Enter your choice: ");
 
-	                try {
-	                    submenuChoice = input.nextInt();
-	                    input.nextLine();
+					try {
+						submenuChoice = input.nextInt();
+						input.nextLine();
 
-	                    switch (submenuChoice) {
-	                        case 1:
-	                            System.out.println("Returning to the main menu.");
-	                            break;
-	                        case 2:
-	                            viewAllFilmDetails(film);
+						switch (submenuChoice) {
+						case 1:
+							System.out.println("Returning to the main menu.");
+							break;
+						case 2:
+							viewAllFilmDetails(film);
 
-	                            // Check if the user wants to return to the main menu immediately
-	                            System.out.print("Enter 'M' to return to the main menu: ");
-	                            String returnToMainMenu = input.nextLine().toUpperCase();
+							System.out.print("Enter 'M' to return to the main menu: ");
+							String returnToMainMenu = input.nextLine().toUpperCase();
 
-	                            if (!returnToMainMenu.equals("M")) {
-	                                System.out.println("Invalid choice. Returning to the main menu.");
-	                                return; // Exit the method if the choice is not 'M'
-	                            }
-	                            break;
-	                        default:
-	                            System.out.println("Invalid choice. Please enter a valid option.");
-	                    }
-	                } catch (java.util.InputMismatchException e) {
-	                    System.out.println("Invalid input. Please enter a number.");
-	                    input.nextLine();
-	                }
+							if (!returnToMainMenu.equals("M")) {
+								System.out.println("Invalid choice. Returning to the main menu.");
+								return; 
+							}
+							break;
+						default:
+							System.out.println("Invalid choice. Please enter a valid option.");
+						}
+					} catch (java.util.InputMismatchException e) {
+						System.out.println("Invalid input. Please enter a number.");
+						input.nextLine();
+					}
 
-	            } while (submenuChoice != 1);
-	        } else {
-	            System.out.println("Film not found with ID: " + filmId);
-	        }
-	    } catch (java.util.InputMismatchException e) {
-	        System.out.println("Invalid input. Please enter a valid number.");
-	        input.nextLine(); // Clear the invalid input
-	    }
+				} while (submenuChoice != 1);
+			} else {
+				System.out.println("Film not found with ID: " + filmId);
+			}
+		} catch (java.util.InputMismatchException e) {
+			System.out.println("Invalid input. Please enter a valid number.");
+			input.nextLine();
+		}
 	}
-
 
 	private void viewAllFilmDetails(Film film) {
 		List<String> categories = db.findCategoriesByFilmId(film.getId());
-		System.out.println("All film details:");
+		System.out.println("\nAll film details:");
+		System.out.println("---------------------------------------");
 		System.out.println(" - Film ID: " + film.getId());
 		System.out.println(" - Title: " + film.getTitle());
-		System.out.println(" - Description: " + film.getDescription());
+		System.out.println(String.format(" - Description: %s", wrapText(film.getDescription())));
+
 		System.out.println(" - Categories: " + String.join(", ", categories));
 		System.out.println(" - Release Year: " + film.getReleaseYear());
 		System.out.println(" - Language: " + film.getLanguage());
@@ -165,7 +153,31 @@ public class FilmQueryApp {
 			System.out.println("   - Id: " + actor.getActorId() + "\t - Name: " + actor.getFirstName() + " "
 					+ actor.getLastName());
 		}
+		
+		System.out.println(" - Copies in Inventory: ");
+	    List<Map<String, Object>> copies = db.findCopiesWithConditionsByFilmId(film.getId());
+	    for (Map<String, Object> copy : copies) {
+	        System.out.println(" - Copy ID: " + copy.get("id") + "    - Condition: " + copy.get("media_condition"));
+	    }
+	}
+	
+	
 
+	private String wrapText(String text) {
+		int maxLineLength = 40;
+		StringBuilder wrappedText = new StringBuilder();
+		String[] words = text.split("\\s+");
+		int currentLineLength = 0;
+		String indentation = "\t";
+		for (String word : words) {
+			if (currentLineLength + indentation.length() + word.length() > maxLineLength) {
+				wrappedText.append("\n").append(indentation);
+				currentLineLength = 0; 
+			}
+			wrappedText.append(word).append(" ");
+			currentLineLength += indentation.length() + word.length() + 1; 
+		}
+		return wrappedText.toString();
 	}
 
 	private void lookUpFilmByKeyword(Scanner input) {
@@ -173,7 +185,8 @@ public class FilmQueryApp {
 		String keyword = input.nextLine();
 		List<Film> films = db.findFilmsByKeyword(keyword);
 		if (!films.isEmpty()) {
-			System.out.println("Films found with keyword '" + keyword + "':");
+			System.out.println("\nFilms found with keyword '" + keyword + "':");
+			System.out.println("---------------------------------------");
 			for (Film film : films) {
 				System.out.println(film);
 			}

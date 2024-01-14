@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
@@ -107,7 +109,27 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    }
 	    return films;
 	}
-
+	
+	@Override
+	public List<Map<String, Object>> findCopiesWithConditionsByFilmId(int filmId) {
+	    List<Map<String, Object>> copies = new ArrayList<>();
+	    String sql = "SELECT id, media_condition FROM inventory_item WHERE film_id = ? AND media_condition IS NOT NULL";
+	    
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setInt(1, filmId);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                Map<String, Object> copyInfo = new HashMap<>();
+	                copyInfo.put("id", rs.getInt("id"));
+	                copyInfo.put("media_condition", rs.getString("media_condition"));
+	                copies.add(copyInfo);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return copies;
+	}
 
 	public List<Film> findFilmsByActorId(int actorId) {
 		List<Film> films = new ArrayList<>();
