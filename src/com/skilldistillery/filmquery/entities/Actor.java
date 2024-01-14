@@ -81,8 +81,4 @@ public class Actor {
 		builder.append(" \n ");
 		return builder.toString();
 	}
-
-
-	
-
 }

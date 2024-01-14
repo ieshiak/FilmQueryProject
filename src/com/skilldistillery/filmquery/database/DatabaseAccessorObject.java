@@ -41,7 +41,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Film not found with ID: " + filmId);
+		//System.out.println("Film not found with ID: " + filmId);
 		return null;
 	}
 
@@ -88,6 +88,26 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    }
 	    return actors;
 	}
+	
+	@Override
+	public List<Film> findFilmsByKeyword(String keyword) {
+	    List<Film> films = new ArrayList<>();
+	    String sql = "SELECT * FROM film WHERE title LIKE ? OR description LIKE ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, "%" + keyword + "%");
+	        stmt.setString(2, "%" + keyword + "%");
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                Film film = extractFilmFromResultSet(rs);
+	                films.add(film);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return films;
+	}
+
 
 	public List<Film> findFilmsByActorId(int actorId) {
 		List<Film> films = new ArrayList<>();
