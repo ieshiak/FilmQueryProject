@@ -174,6 +174,25 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    //System.out.println("Extracted Actor: " + actorId + ", " + firstName + ", " + lastName + ", ...");
 	    return new Actor(actorId, firstName, lastName, films);
 	}
+	@Override
+	public List<String> findCategoriesByFilmId(int filmId) {
+	    List<String> categories = new ArrayList<>();
+	    String sql = "SELECT category.name FROM category "
+	               + "JOIN film_category ON category.id = film_category.category_id "
+	               + "WHERE film_category.film_id = ?";
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setInt(1, filmId);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                String category = rs.getString("name");
+	                categories.add(category);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return categories;
+	}
 
 
 	public void closeConnection() {
